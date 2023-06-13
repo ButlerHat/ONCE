@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  once:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+      target: base
+    container_name: once
+    init: true
+    user: vscode
+    volumes:
+      - ${HOME}/urjc_chapo/ai-butlerhat:/workspaces/ai-butlerhat:cached
+      - ${HOME}/.ssh:/home/vscode/.ssh:cached
+      - ${HOME}/.cloudflared:/home/vscode/.cloudflared:cached
+      - ${HOME}/data/ONCE/results:/workspaces/ONCE/results:cached
+      - ${HOME}/data/ONCE/downloads:/workspaces/ONCE/downloads:cached
+      - ${HOME}/data/ONCE/data:/workspaces/ONCE/data:cached
+    cap_add:
+      - SYS_ADMIN
+    shm_size: '2gb'
+    networks:
+      - external
+    environment:
+      - ROBOT_ONCE_PASS=${ROBOT_ONCE_PASS:-0}
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+networks:
+  external:
+    name: net_robot
