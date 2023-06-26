@@ -1,0 +1,3 @@
+[submodule "ONCE-Chat"]
+	path = ONCE-Chat
+	url = git@github.com:ButlerHat/ONCE-Chat.git
