@@ -11,9 +11,22 @@ USER root
 # RUN usermod -u $USER_ID -g $GROUP_ID $UNAME
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends poppler-utils ffmpeg libsm6 libxext6
+    && apt-get -y install --no-install-recommends poppler-utils ffmpeg libsm6 libxext6 libglu1-mesa xz-utils \
+    clang cmake ninja-build libgtk-3-dev
 
 ENV PATH=/home/$UNAME/.local/bin:$PATH
+
+# Install Flutter
+WORKDIR /opt
+RUN wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.10.5-stable.tar.xz
+RUN tar xf flutter_linux_3.10.5-stable.tar.xz
+RUN rm flutter_linux_3.10.5-stable.tar.xz
+ENV PATH=/opt/flutter/bin:$PATH
+
+# Install chrome
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get -y install ./google-chrome-stable_current_amd64.deb
+RUN rm google-chrome-stable_current_amd64.deb
 
 # Copy RobotLibraries.
 RUN mkdir /tmp/pip-tmp && chmod -R 777 /tmp && chmod -R 777 /opt/conda
