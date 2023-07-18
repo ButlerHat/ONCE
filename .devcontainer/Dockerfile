@@ -12,7 +12,7 @@ USER root
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends poppler-utils ffmpeg libsm6 libxext6 libglu1-mesa xz-utils \
-    clang cmake ninja-build libgtk-3-dev
+    clang cmake ninja-build libgtk-3-dev scrot
 
 ENV PATH=/home/$UNAME/.local/bin:$PATH
 
