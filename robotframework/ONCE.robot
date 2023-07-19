@@ -1,5 +1,5 @@
 *** Settings ***
-Library  ButlerRobot.AIDesktopLibrary  WITH NAME  Desktop
+Library  ButlerRobot.AIDesktopLibrary  ai_url=http://ai_demo.butlerhat.com/predict_rf  compute_offset=True  WITH NAME  Desktop
 
 *** Variables ***
 ${name}    Sofea
@@ -8,11 +8,8 @@ ${email_prefix}  albanos19909
 
 *** Tasks ***
 Open google
-    Log  asdf
+    Record Test   test
     Desktop.Open Application    google-chrome
-    Desktop.Press Keys  ctrl  l
-    Desktop.Keyboard Input  chatgpt
-    Desktop.Press Keys  enter
+    Sleep  2
     Desktop.Maximize Window
-    
-    AI.Clica en chatgpt - OpenAI
+    AI.Busca chatgpt

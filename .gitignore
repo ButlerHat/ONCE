@@ -172,3 +172,4 @@ conda_pass.yaml
 result.json
 orders.zip
 jobs/stock.sh
+ai-finetuned/
