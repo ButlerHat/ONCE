@@ -21,7 +21,7 @@ WORKDIR /opt
 RUN wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.10.5-stable.tar.xz
 RUN tar xf flutter_linux_3.10.5-stable.tar.xz
 RUN rm flutter_linux_3.10.5-stable.tar.xz
-ENV PATH=/opt/flutter/bin:$PATH
+RUN flutter upgrade
 
 # Install chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -29,16 +29,20 @@ RUN apt-get -y install ./google-chrome-stable_current_amd64.deb
 RUN rm google-chrome-stable_current_amd64.deb
 
 # Copy RobotLibraries.
-RUN mkdir /tmp/pip-tmp && chmod -R 777 /tmp && chmod -R 777 /opt/conda
+RUN mkdir /tmp/conda-tmp/ && chmod -R 777 /tmp && chmod -R 777 /opt/conda
 USER $UNAME
-COPY conda.yaml /tmp/pip-tmp/conda.yaml
-COPY .devcontainer/resolve_conda_secret.py /tmp/pip-tmp/resolve_conda_secret.py
+COPY conda.yaml* .devcontainer/noop.txt /tmp/conda-tmp/
+COPY .devcontainer/resolve_conda_secret.py /tmp/conda-tmp//resolve_conda_secret.py
 
-WORKDIR /tmp/pip-tmp
+WORKDIR /tmp/conda-tmp/
 RUN python resolve_conda_secret.py --token $GITHUB_TOKEN
-RUN conda env update -n base -f conda_pass.yaml
+RUN if [ -f "/tmp/conda-tmp/conda_pass.yaml" ]; then umask 0002 && conda env create -n robotframework -f /tmp/conda-tmp/conda_pass.yaml; fi 
+RUN echo "conda activate robotframework" >> ~/.bashrc
+RUN chmod -R a+rw /opt/conda/envs/robotframework/lib/python3.10/site-packages/Browser
+RUN rm conda_pass.yaml
 
 WORKDIR /workspaces
-RUN rm -rf /tmp/pip-tmp
+RUN rm -rf /tmp/conda-tmp/
 
+ENV PATH=/opt/flutter/bin:$PATH
 ENV TZ='/usr/share/zoneinfo/Europe/Madrid'
